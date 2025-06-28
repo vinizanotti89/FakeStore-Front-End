@@ -1,9 +1,21 @@
-import styled from "styled-components";
+import styled, { keyframes } from 'styled-components';
+
 import { Link as RouterLink } from 'react-router-dom';
 
 import BackgroundLogin from "../../assets/BackgroundLogin.png";
 import Background from "../../assets/Background.png";
 
+// Animação de "fade-in"
+const fadeIn = keyframes`
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+`;
+
+// Animação de "fade-out"
+const fadeOut = keyframes`
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(10px); }
+`;
 
 export const LoginContainer = styled.div`
     display: flex;
@@ -80,6 +92,8 @@ export const InputContainer = styled.div`
     flex-direction: column;
     gap: 5px;
     width: 100%;
+    position: relative;
+
     input{
         width: 100%;
         border: 1px solid #ccc;
@@ -92,6 +106,22 @@ export const InputContainer = styled.div`
         font-size: 18px;
         color: #20262a;
         font-weight: bold;
+    }
+
+   div {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        font-size: 14px;
+        margin-top: 5px;
+        position: absolute;
+        top: -10px;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        animation: ${fadeIn} 0.3s ease-in-out, ${fadeOut} 0.3s ease-in-out 1.2s forwards;
     }
 
 `;

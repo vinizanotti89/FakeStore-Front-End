@@ -15,6 +15,7 @@ export const ContainerButton = styled.button`
   position: relative;
   z-index: 1;
   overflow: hidden;
+  border-color: #f23c34;
 
   &:before {
     content: '';
@@ -35,7 +36,6 @@ export const ContainerButton = styled.button`
 
   &:hover {
     color: #000;
-    border-color: #f23c34;
     box-shadow: 0 0 12px 3px rgba(242, 60, 52, 0.5);
   }
 
