@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 
 import {
-  ForgotPasswordLink,
   SignUpLink,
   Form,
   H2,
@@ -21,10 +20,11 @@ import {
 
 import { Button } from '../../components/Button';
 
-export function Login() {
+export function Register() {
   const navigate = useNavigate();
   const schema = yup
     .object({
+      name: yup.string().required('O nome é obrigatório'),
       email: yup
         .string()
         .email('Email inválido')
@@ -33,6 +33,10 @@ export function Login() {
         .string()
         .min(6, 'A senha deve ter no mínimo 6 caracteres')
         .required('A senha é obrigatória'),
+      confirmPassword: yup
+        .string()
+        .oneOf([yup.ref('password'), null], 'As senhas devem ser iguais')
+        .required('A confirmação de senha é obrigatória'),
     })
     .required();
 
@@ -47,25 +51,33 @@ export function Login() {
 
   const [showError, setShowError] = useState(false);
   const onSubmit = async (data) => {
-    const response = await toast.promise(
-      api.post('/session', {
-      email: data.email,
-      password: data.password,
-    }),
-    {
-      pending: 'Se acalme, servidores lentos por serem gratuitos!',
-      success: {
-        render() {
-          setTimeout(() => {
-            navigate('/'); 
-          }, 2000); 
-          return 'Bem vindo(a) a Loja dos Produtos que Deveriam Existir!';
-        }, 
+    try {
+    const { status } = await api.post('/users', {
+        name: data.name,
+        email: data.email,
+        password: data.password,
       },
-      error: 'Usuário ou Senha inválidos',
-}
-    ) 
-    console.log(response);
+      {
+        validateStatus: () => true,
+      });
+
+      if (status === 200 || status === 201) {
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+        toast.success('Usuário cadastrado com sucesso');
+        setTimeout(() => {
+          window.location.href = '/login'; 
+        }, 1000);
+      } else if (status === 400) {
+        toast.error('Email já cadastrado, se esqueceu a senha, clique em "Esqueci minha senha"');
+      } else {
+        toast.error('Erro ao cadastrar usuário, tente novamente mais tarde');
+      }
+
+  } catch (error) {
+     throw new Error();
+    }
   };
 
   useEffect(() => {
@@ -85,14 +97,24 @@ export function Login() {
       </LeftContainer>
 
       <RightContainer>
-        <H2>Seja bem-vindo à Loja dos Produtos que Deveriam Existir!</H2>
-        <P>
-          Aqui, tudo é Fake — mas o objetivo é real: Unir entretenimento com
-          aprendizado.
-        </P>{' '}
-        <br />
+        <H2>Crie sua conta</H2>
+        
         <br />
         <Form onSubmit={handleSubmit(onSubmit)}>
+          <InputContainer>
+            <label>Nome</label>
+            <input
+              type="text"
+              placeholder="Digite seu Nome"
+              {...register('name')}
+            />
+            {/* Popup de erro */}
+            {showError && errors?.name && (
+              <div>
+                <p>{errors?.name?.message}</p>
+              </div>
+            )}
+          </InputContainer>
           <InputContainer>
             <label>Email</label>
             <input
@@ -121,13 +143,25 @@ export function Login() {
               </div>
             )}
           </InputContainer>
-          <Button type="submit">Entrar</Button> <br />
-          <ForgotPasswordLink to="/reset-token/:token">
-            Esqueci minha senha
-          </ForgotPasswordLink>
+          <InputContainer>
+            <label>Confirme sua senha</label>
+            <input
+              type="password"
+              placeholder="Digite a mesma senha"
+              {...register('confirmPassword')}
+            />
+            {/* Popup de erro */}
+            {showError && errors?.password && (
+              <div>
+                <p>{errors?.password?.message}</p>
+              </div>
+            )}
+          </InputContainer>
+          <Button type="submit">Cadastrar</Button> <br />
+          
         </Form>
-        <span>Não possui uma conta?</span>
-        <SignUpLink to="/cadastro">Clique AQUI</SignUpLink>
+        <span>Já possui uma conta?</span>
+        <SignUpLink to="/login">Clique AQUI</SignUpLink>
       </RightContainer>
     </LoginContainer>
   );
