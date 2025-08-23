@@ -18,7 +18,7 @@ export function Home() {
         <Banner />
       </BannerSection>
 
-      <BackgroundContainer opacity={0.85}>
+      <BackgroundContainer $opacity={0.85}>
         <Content>
           <CategoriesCarousel />
           <OffersSection />

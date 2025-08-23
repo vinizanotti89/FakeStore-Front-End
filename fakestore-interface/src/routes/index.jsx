@@ -5,7 +5,7 @@ import { Register } from "../containers/Register";
 import ResetarSenha from "../containers/ResetPassword";
 import ResetarToken from "../containers/ResetToken";
 import { ProductDetails } from '../pages/ProductDetails';
-//import { CategoryPage } from './pages/CategoryPage';
+import { CategoryPage } from "../pages/CategoryPage";
 
 import { Home } from "../pages/Home/index";
 
@@ -17,6 +17,10 @@ export const router = createBrowserRouter([
     {
         path: "/product/:id",
         element: <ProductDetails />,
+    },
+    {
+        path: "/category/:categoryId",
+        element: <CategoryPage />,
     },
     {
         path: "/login",

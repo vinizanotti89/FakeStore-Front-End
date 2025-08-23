@@ -90,7 +90,7 @@ export function ProductDetails() {
   }
 
   return (
-    <BackgroundContainer opacity={0.85}>
+    <BackgroundContainer $opacity={0.85}>
       <Container>
         <BackButton onClick={handleBack}>
           <BackIcon>←</BackIcon>
