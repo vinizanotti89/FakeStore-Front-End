@@ -1,15 +1,22 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { Login } from "../containers/Login";
+import { Login } from "../pages/Login";
 import { Register } from "../containers/Register";
 import ResetarSenha from "../containers/ResetPassword";
 import ResetarToken from "../containers/ResetToken";
-import { Home } from "../containers/Home/index";
+import { ProductDetails } from '../pages/ProductDetails';
+//import { CategoryPage } from './pages/CategoryPage';
+
+import { Home } from "../pages/Home/index";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <Home />,
+    },
+    {
+        path: "/product/:id",
+        element: <ProductDetails />,
     },
     {
         path: "/login",

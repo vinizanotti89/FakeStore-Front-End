@@ -1,7 +1,5 @@
 import styled from "styled-components";
-
 import BannerHome from '../../assets/Banner.png';
-import Background from '../../assets/Background.png';
 
 export const BannerSection = styled.section`
   width: 100%;
@@ -57,34 +55,10 @@ export const Banner = styled.div`
   }
 `;
 
-export const Container = styled.section`
-  position: relative;
-  background: url(${Background});
-  background-size: cover;
-  background-position: center;
-  background-repeat: repeat-y; /* Repete verticalmente de forma sutil */
-  background-attachment: local; 
-  min-height: 100vh; 
-  width: 100%;
-  
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.6); 
-    z-index: 1;
-    pointer-events: none; 
-  }
-  
-  > * {
-    position: relative;
-    z-index: 2;
-  }
-`;
-
 export const Content = styled.div`
+  padding: 1rem;
+  
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+  }
 `;

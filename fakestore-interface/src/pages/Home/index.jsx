@@ -1,5 +1,12 @@
-import { Banner, BannerSection, BannerTitle, Container, Content } from './styles';
+import {
+  Banner,
+  BannerSection,
+  BannerTitle,
+  Content,
+} from './styles.js';
 import { CategoriesCarousel } from '../../components/CategoryCarousel/index.jsx';
+import { OffersSection } from '../../components/OfferSection/index.jsx';
+import { BackgroundContainer } from '../../components/BackgroundContainer/index.jsx';
 
 export function Home() {
   return (
@@ -10,12 +17,13 @@ export function Home() {
         </BannerTitle>
         <Banner />
       </BannerSection>
-      <Container>
+
+      <BackgroundContainer opacity={0.85}>
         <Content>
           <CategoriesCarousel />
-          <div> Carrossel Produtos</div>
+          <OffersSection />
         </Content>
-      </Container>
+      </BackgroundContainer>
     </main>
   );
 }
