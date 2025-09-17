@@ -1,27 +1,51 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import { Layout } from "../components/Layout";
 import { Login } from "../pages/Login";
 import { Register } from "../containers/Register";
 import ResetarSenha from "../containers/ResetPassword";
 import ResetarToken from "../containers/ResetToken";
 import { ProductDetails } from '../pages/ProductDetails';
 import { CategoryPage } from "../pages/CategoryPage";
+import { CartPage } from "../pages/CartPage";
+
 
 import { Home } from "../pages/Home/index";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <Home />,
+        element: (
+            <Layout>
+                <Home />
+            </Layout>
+        ),
     },
     {
         path: "/product/:id",
-        element: <ProductDetails />,
+        element: (
+            <Layout>
+                <ProductDetails />
+            </Layout>
+        ),
     },
     {
         path: "/category/:categoryId",
-        element: <CategoryPage />,
+        element: (
+            <Layout>
+                <CategoryPage />
+            </Layout>
+        ),
     },
+    {
+        path: "/cart",
+        element: (
+            <Layout>
+                <CartPage />
+            </Layout>
+        ),
+    },
+    // Páginas de autenticação SEM o header
     {
         path: "/login",
         element: <Login />,
@@ -39,4 +63,3 @@ export const router = createBrowserRouter([
         element: <ResetarToken />,
     },
 ])
-

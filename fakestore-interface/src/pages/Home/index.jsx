@@ -7,6 +7,7 @@ import {
 import { CategoriesCarousel } from '../../components/CategoryCarousel/index.jsx';
 import { OffersSection } from '../../components/OfferSection/index.jsx';
 import { BackgroundContainer } from '../../components/BackgroundContainer/index.jsx';
+import { HomeNavigation } from '../../components/HomeNavigation/index.jsx'; 
 
 export function Home() {
   return (
@@ -24,6 +25,8 @@ export function Home() {
           <OffersSection />
         </Content>
       </BackgroundContainer>
+
+      <HomeNavigation />
     </main>
   );
 }

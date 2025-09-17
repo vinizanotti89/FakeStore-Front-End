@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { BackgroundContainer } from '../../components/BackgroundContainer';
-import { ProductCard } from '../../components/ProductCard';
+import { formatPrice } from '../../utils/formatPrice';
+import { BackgroundContainer } from '../../components/BackgroundContainer/index.jsx';
+import { CategoriesCarousel } from '../../components/CategoryCarousel/index.jsx';
+import { AddToCartButton } from '../../components/AddToCartButton'; 
 import {
   Container,
   BackButton,
@@ -13,6 +15,11 @@ import {
   LoadingMessage,
   ErrorMessage,
   EmptyMessage,
+  ProductCardContainer,
+  ProductImage,
+  ProductInfo,
+  ProductName,
+  ProductPrice,
 } from './styles.js';
 
 export function CategoryPage() {
@@ -67,6 +74,12 @@ export function CategoryPage() {
     navigate('/');
   };
 
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`, {
+      state: { from: `/category/${categoryId}` },
+    });
+  };
+
   if (loading) {
     return (
       <BackgroundContainer>
@@ -96,6 +109,8 @@ export function CategoryPage() {
           <BackIcon>←</BackIcon>
           Voltar para Home
         </BackButton>
+        
+        <CategoriesCarousel />
 
         <CategoryHeader>
           <CategoryTitle>{categoryInfo?.name || 'Categoria'}</CategoryTitle>
@@ -113,12 +128,25 @@ export function CategoryPage() {
         ) : (
           <ProductsGrid>
             {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                fromPath={`/category/${categoryId}`}
-                showOfferBadge={true}
-              />
+              <ProductCardContainer key={product.id}>
+                <ProductImage
+                  src={product.url}
+                  alt={product.name}
+                  onClick={() => handleProductClick(product.id)}
+                  onError={(e) => {
+                    e.target.src = '/placeholder-product.png';
+                  }}
+                />
+                <ProductInfo>
+                  <ProductName onClick={() => handleProductClick(product.id)}>
+                    {product.name}
+                  </ProductName>
+                  <ProductPrice>{formatPrice(product.price)}</ProductPrice>
+                  
+                  {/*BOTÃO DE ADICIONAR AO CARRINHO */}
+                  <AddToCartButton product={product} />
+                </ProductInfo>
+              </ProductCardContainer>
             ))}
           </ProductsGrid>
         )}

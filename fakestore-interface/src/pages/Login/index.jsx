@@ -4,8 +4,7 @@ import * as yup from 'yup';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
-import api from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 import {
   ForgotPasswordLink,
@@ -22,6 +21,7 @@ import {
 import { Button } from '../../components/Button';
 
 export function Login() {
+  const { login, user } = useAuth();
   const navigate = useNavigate();
   const schema = yup
     .object({
@@ -46,26 +46,25 @@ export function Login() {
   console.log(errors);
 
   const [showError, setShowError] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+
+  // Monitora quando o usuário é logado para fazer o redirecionamento
+  useEffect(() => {
+    if (user && loginSuccess) {
+      navigate('/');
+      setLoginSuccess(false);
+    }
+  }, [user, loginSuccess, navigate]);
+
   const onSubmit = async (data) => {
-    const response = await toast.promise(
-      api.post('/session', {
-      email: data.email,
-      password: data.password,
-    }),
-    {
-      pending: 'Se acalme, servidores lentos por serem gratuitos!',
-      success: {
-        render() {
-          setTimeout(() => {
-            navigate('/'); 
-          }, 2000); 
-          return 'Bem vindo(a) a Loja dos Produtos que Deveriam Existir!';
-        }, 
-      },
-      error: 'Usuário ou Senha inválidos',
-}
-    ) 
-    console.log(response);
+    const result = await login(data.email, data.password); // chama login direto
+
+    if (result.success) {
+      toast.success('Bem vindo(a) a Loja dos Produtos que Deveriam Existir!');
+      navigate('/'); // redireciona após login
+    } else {
+      toast.error(result.error || 'Usuário ou senha inválidos');
+    }
   };
 
   useEffect(() => {

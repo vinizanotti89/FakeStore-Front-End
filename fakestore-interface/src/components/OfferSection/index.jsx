@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getProductsOnOffer } from '../../services/api';
 import { formatPrice } from '../../utils/formatPrice';
+import { AddToCartButton } from '../AddToCartButton'; 
 import {
   Container,
   Title,
@@ -65,14 +66,12 @@ export function OffersSection() {
       <Title>🔥 Produtos em Destaque</Title>
       <ProductsGrid>
         {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            onClick={() => handleProductClick(product.id)}
-          >
+          <ProductCard key={product.id}>
             <OfferBadge>DESTAQUE</OfferBadge>
             <ProductImage
               src={product.url}
               alt={product.name}
+              onClick={() => handleProductClick(product.id)}
               onError={(e) => {
                 e.target.src = '/placeholder-product.png'; // Imagem fallback
               }}
@@ -81,8 +80,13 @@ export function OffersSection() {
               <ProductCategory>
                 {product.category?.name || 'Categoria'}
               </ProductCategory>
-              <ProductName>{product.name}</ProductName>
+              <ProductName onClick={() => handleProductClick(product.id)}>
+                {product.name}
+              </ProductName>
               <ProductPrice>{formatPrice(product.price)}</ProductPrice>
+              
+              {/* BOTÃO DE ADICIONAR AO CARRINHO */}
+              <AddToCartButton product={product} />
             </ProductInfo>
           </ProductCard>
         ))}

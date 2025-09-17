@@ -82,9 +82,9 @@ export const ProductImage = styled.img`
   display: block;
   margin: 0 auto; /* Centraliza horizontalmente */
   
-  ${ProductCard}:hover & {
-    transform: scale(1.05);
-  }
+  &:hover {
+  transform: scale(1.05);
+}
 `;
 
 export const ProductInfo = styled.div`
@@ -95,7 +95,7 @@ export const ProductInfo = styled.div`
 `;
 
 export const ProductCategory = styled.span`
-  color: #666;
+  color: #667;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -125,7 +125,7 @@ export const LoadingMessage = styled.div`
   text-align: center;
   padding: 3rem;
   font-size: 1.2rem;
-  color: #666;
+  color: #667;
   font-family: 'Road Rage', sans-serif;
 `;
 
@@ -143,6 +143,6 @@ export const EmptyMessage = styled.div`
   text-align: center;
   padding: 3rem;
   font-size: 1.1rem;
-  color: #666;
+  color: #667;
   font-style: italic;
 `;

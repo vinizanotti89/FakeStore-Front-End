@@ -60,20 +60,37 @@ export const ImageContainer = styled.div`
   overflow: hidden;
 `;
 
-export const ProductImage = styled.img`
-  width: 100%;
-  max-width: 500px;
-  height: auto;
-  min-height: 300px;
-  object-fit: cover;
+export const ProductCard = styled.div`
+  position: relative;
+  background: white;
   border-radius: 15px;
-  display: block;
-  margin: 0 auto;
-
-  @media (max-width: 768px) {
-    min-height: 250px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    border-color: #290002;
   }
 `;
+
+export const ProductImage = styled.img`
+  width: 85%;
+  height: 400px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  display: block;
+  margin: 0 auto; /* Centraliza horizontalmente */
+  
+  &:hover {
+  transform: scale(1.05);
+}
+`;
+
+
 
 export const OfferBadge = styled.span`
   position: absolute;
@@ -110,7 +127,7 @@ export const ProductInfo = styled.div`
 `;
 
 export const ProductCategory = styled.span`
-  color: #666;
+  color: #667;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -154,7 +171,7 @@ export const LoadingMessage = styled.div`
   align-items: center;
   min-height: 50vh;
   font-size: 1.3rem;
-  color: #666;
+  color: #667;
   font-family: 'Road Rage', sans-serif;
 `;
 

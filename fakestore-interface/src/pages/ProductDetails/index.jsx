@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { BackgroundContainer } from '../../components/BackgroundContainer';
 import { formatPrice } from '../../utils/formatPrice';
+
 import {
   Container,
   BackButton,
@@ -122,6 +123,7 @@ export function ProductDetails() {
               {product.description && (
                 <ProductDescription>{product.description}</ProductDescription>
               )}
+              
             </ProductInfo>
           </InfoSection>
         </ProductContainer>

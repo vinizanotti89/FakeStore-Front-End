@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  background-color: #ffffff;
-  min-height: 100vh;
   padding: 20px;
 `;
 
@@ -42,6 +40,10 @@ export const CategoryHeader = styled.div`
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem 0;
+  /* Adicionando fundo semi-transparente para melhor legibilidade */
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
 `;
 
 export const CategoryTitle = styled.h1`
@@ -60,7 +62,7 @@ export const CategoryTitle = styled.h1`
 
 export const CategoryDescription = styled.p`
   font-size: 1.2rem;
-  color: #666;
+  color: #667;
   font-weight: 400;
   margin: 0;
 `;
@@ -92,10 +94,13 @@ export const LoadingMessage = styled.div`
   color: #290002;
   font-weight: 500;
   text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
 `;
 
 export const ErrorMessage = styled.div`
-  background-color: #f8d7da;
+  background-color: rgba(248, 215, 218, 0.95);
   color: #721c24;
   border: 1px solid #f5c6cb;
   padding: 1.5rem;
@@ -104,21 +109,22 @@ export const ErrorMessage = styled.div`
   text-align: center;
   font-size: 1.1rem;
   max-width: 600px;
+  backdrop-filter: blur(5px);
 `;
 
 export const EmptyMessage = styled.div`
   text-align: center;
   font-size: 1.3rem;
-  color: #666;
+  color: #667;
   margin: 4rem auto;
   padding: 2rem;
-  background: #f8f9fa;
+  background: rgba(248, 249, 250, 0.95);
   border-radius: 10px;
   max-width: 500px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
 `;
 
-// Componentes existentes que você já tinha - mantendo para compatibilidade
 export const Banner = styled.div`
   background: url(${props => props.backgroundImage}) no-repeat center center;
   background-size: cover;
@@ -149,6 +155,22 @@ export const ProductsContainer = styled.div`
   margin-top: 30px;
 `;
 
+//NOVOS ESTILOS PARA OS PRODUTOS
+export const ProductCardContainer = styled.div`
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    border-color: #290002;
+  }
+`;
+
 export const ProductCard = styled.div`
   background: #fff;
   border-radius: 10px;
@@ -162,25 +184,43 @@ export const ProductCard = styled.div`
 `;
 
 export const ProductImage = styled.img`
-  width: 100%;
+  width: 65%;
   height: 200px;
   object-fit: cover;
+  transition: transform 0.3s ease;
+  display: block;
+  margin: 0 auto; /* Centraliza horizontalmente */
+  cursor: pointer;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const ProductInfo = styled.div`
-  padding: 15px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 export const ProductName = styled.h3`
   font-size: 1.2rem;
   color: #333;
   margin-bottom: 10px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #9758a6;
+  }
 `;
 
 export const ProductPrice = styled.p`
-  font-size: 1.1rem;
-  color: #9758a6;
+  font-size: 1.3rem;
+  color: #290002;
   font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 `;
 
 export const AddToCartButton = styled.button`
