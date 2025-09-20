@@ -8,6 +8,9 @@ import { router } from './routes';
 import { CartProvider } from './contexts/CartContext';
 import { AuthProvider } from './contexts/AuthContext';
 
+import { Elements } from '@stripe/react-stripe-js';
+import { stripePromise } from './config/stripeConfig';
+
 //Estilos globais
 import GlobalStyle from './styles/globalStyles';
 
@@ -15,9 +18,22 @@ createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
       <CartProvider>
-        <RouterProvider router={router} />
         <GlobalStyle />
-        <ToastContainer autoClose={3000} theme="colored" />
+        <Elements stripe={stripePromise}>
+          <RouterProvider router={router} />
+        </Elements>
+        <ToastContainer
+          position="top-center"
+          autoClose={1000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable
+          pauseOnHover={false}
+          theme="colored"
+        />
       </CartProvider>
     </AuthProvider>
   </React.StrictMode>,

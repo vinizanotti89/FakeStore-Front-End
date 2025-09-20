@@ -1,9 +1,14 @@
-import { createContext, useContext, useReducer, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useState,
+} from 'react';
+import axios from 'axios';
 
-// Criando o Context
 const CartContext = createContext();
 
-// Actions do carrinho
 const CART_ACTIONS = {
   ADD_ITEM: 'ADD_ITEM',
   REMOVE_ITEM: 'REMOVE_ITEM',
@@ -12,7 +17,6 @@ const CART_ACTIONS = {
   LOAD_CART: 'LOAD_CART',
 };
 
-// Reducer do carrinho
 function cartReducer(state, action) {
   switch (action.type) {
     case CART_ACTIONS.ADD_ITEM: {
@@ -22,9 +26,11 @@ function cartReducer(state, action) {
       );
 
       if (existingItemIndex >= 0) {
-        // Item já existe, aumenta a quantidade
         const updatedItems = [...state.items];
         updatedItems[existingItemIndex].quantity += quantity;
+        updatedItems[existingItemIndex].subtotal =
+          updatedItems[existingItemIndex].price *
+          updatedItems[existingItemIndex].quantity;
 
         return {
           ...state,
@@ -33,13 +39,12 @@ function cartReducer(state, action) {
           totalAmount: state.totalAmount + product.price * quantity,
         };
       } else {
-        // Novo item
         const newItem = {
           id: product.id,
           name: product.name,
           price: product.price,
           image: product.image,
-          quantity: quantity,
+          quantity,
           subtotal: product.price * quantity,
         };
 
@@ -74,11 +79,21 @@ function cartReducer(state, action) {
       const { id, quantity } = action.payload;
       const itemIndex = state.items.findIndex((item) => item.id === id);
 
-      if (itemIndex === -1 || quantity <= 0) return state;
+      if (itemIndex === -1) return state;
 
       const updatedItems = [...state.items];
       const item = updatedItems[itemIndex];
       const quantityDifference = quantity - item.quantity;
+
+      if (quantity <= 0) {
+        updatedItems.splice(itemIndex, 1);
+        return {
+          ...state,
+          items: updatedItems,
+          totalItems: state.totalItems - item.quantity,
+          totalAmount: state.totalAmount - item.subtotal,
+        };
+      }
 
       item.quantity = quantity;
       item.subtotal = item.price * quantity;
@@ -92,104 +107,97 @@ function cartReducer(state, action) {
     }
 
     case CART_ACTIONS.CLEAR_CART:
-      return {
-        items: [],
-        totalItems: 0,
-        totalAmount: 0,
-      };
+      return { items: [], totalItems: 0, totalAmount: 0 };
 
     case CART_ACTIONS.LOAD_CART:
-      return action.payload;
+      return action.payload || { items: [], totalItems: 0, totalAmount: 0 };
 
     default:
       return state;
   }
 }
 
-// Estado inicial
 const initialState = {
   items: [],
   totalItems: 0,
   totalAmount: 0,
 };
 
-// Provider do Context
 export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
+  const [clientSecret, setClientSecret] = useState(null);
 
-  // Carregar carrinho do localStorage quando iniciar
   useEffect(() => {
-    const savedCart = localStorage.getItem('@ecommerce:cart');
-    if (savedCart) {
-      try {
-        const parsedCart = JSON.parse(savedCart);
-        dispatch({ type: CART_ACTIONS.LOAD_CART, payload: parsedCart });
-      } catch (error) {
-        console.error('Erro ao carregar carrinho do localStorage:', error);
+    const userId = localStorage.getItem('@ecommerce:userId') || 'guest';
+    try {
+      const savedCart = localStorage.getItem(`@ecommerce:cart:${userId}`);
+      if (savedCart) {
+        const parsed = JSON.parse(savedCart);
+        if (parsed && parsed.items) {
+          dispatch({ type: CART_ACTIONS.LOAD_CART, payload: parsed });
+        }
       }
+    } catch (err) {
+      console.error('Erro ao carregar carrinho:', err);
     }
   }, []);
 
-  // Salvar carrinho no localStorage sempre que houver mudanças
   useEffect(() => {
-    localStorage.setItem('@ecommerce:cart', JSON.stringify(state));
+    const userId = localStorage.getItem('@ecommerce:userId') || 'guest';
+    localStorage.setItem(`@ecommerce:cart:${userId}`, JSON.stringify(state));
   }, [state]);
 
-  // Funções auxiliares
-  const addItem = (product, quantity = 1) => {
-    dispatch({
-      type: CART_ACTIONS.ADD_ITEM,
-      payload: { product, quantity },
-    });
-  };
+  // Actions
+  const addItem = (product, quantity = 1) =>
+    dispatch({ type: CART_ACTIONS.ADD_ITEM, payload: { product, quantity } });
 
-  const removeItem = (id) => {
-    dispatch({
-      type: CART_ACTIONS.REMOVE_ITEM,
-      payload: { id },
-    });
-  };
+  const removeItem = (id) =>
+    dispatch({ type: CART_ACTIONS.REMOVE_ITEM, payload: { id } });
 
-  const updateQuantity = (id, quantity) => {
-    if (quantity <= 0) {
-      removeItem(id);
-      return;
-    }
+  const updateQuantity = (id, quantity) =>
+    dispatch({ type: CART_ACTIONS.UPDATE_QUANTITY, payload: { id, quantity } });
 
-    dispatch({
-      type: CART_ACTIONS.UPDATE_QUANTITY,
-      payload: { id, quantity },
-    });
-  };
-
-  const clearCart = () => {
-    dispatch({ type: CART_ACTIONS.CLEAR_CART });
-  };
+  const clearCart = () => dispatch({ type: CART_ACTIONS.CLEAR_CART });
 
   const getItemQuantity = (id) => {
     const item = state.items.find((item) => item.id === id);
     return item ? item.quantity : 0;
   };
 
-  const isItemInCart = (id) => {
-    return state.items.some((item) => item.id === id);
-  };
+  const isItemInCart = (id) => state.items.some((item) => item.id === id);
 
-  // Formatador de moeda
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('pt-BR', {
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     }).format(value);
+
+  const createPaymentIntent = async () => {
+    if (!state.items || state.items.length === 0) return null;
+
+    try {
+      const response = await axios.post(
+        'http://localhost:3001/create-payment-intent',
+        {
+          products: state.items.map((item) => ({
+            id: item.id,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+        },
+      );
+      const secret = response.data.clientSecret;
+      setClientSecret(secret);
+      return secret;
+    } catch {
+      return null;
+    }
   };
 
   const contextValue = {
-    // Estado
     items: state.items,
     totalItems: state.totalItems,
     totalAmount: state.totalAmount,
-
-    // Funções
     addItem,
     removeItem,
     updateQuantity,
@@ -197,6 +205,9 @@ export function CartProvider({ children }) {
     getItemQuantity,
     isItemInCart,
     formatCurrency,
+    createPaymentIntent,
+    clientSecret,
+    setClientSecret,
   };
 
   return (
@@ -204,13 +215,9 @@ export function CartProvider({ children }) {
   );
 }
 
-// Hook customizado para usar o Context
 export function useCart() {
   const context = useContext(CartContext);
-
-  if (!context) {
+  if (!context)
     throw new Error('useCart deve ser usado dentro de um CartProvider');
-  }
-
   return context;
 }

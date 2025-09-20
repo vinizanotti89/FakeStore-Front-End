@@ -148,15 +148,3 @@ export const SignUpLink = styled(RouterLink)`
     text-decoration: underline;
   }
 `;
-
-export const ErrorMessage = styled.p`
-  background-color: #f8d7da;
-  color: #f23c34;
-  padding: 10px;
-  border: 1px solid #f5c6cb;
-  border-radius: 5px;
-  font-size: 14px;
-  margin-top: 5px;
-  box-sizing: border-box;
-  animation: ${fadeIn} 0.25s ease-in-out, ${fadeOut} 0.25s ease-in-out 1.25s forwards;
-`;
