@@ -10,37 +10,33 @@ export function CategoriesCarousel() {
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
 
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
   useEffect(() => {
     async function loadCategories() {
       const { data } = await api.get('/categories');
-      setCategories(data);
-      console.log(data);
+
+      // Mapear para incluir imageUrl completo
+      const categoriesWithImageUrl = data.map((category) => ({
+        ...category,
+        imageUrl: `${baseUrl}/uploads/${category.path}`,
+      }));
+
+      setCategories(categoriesWithImageUrl);
+      console.log(categoriesWithImageUrl);
     }
     loadCategories();
-  }, []);
+  }, [baseUrl]);
 
- // Função para navegar para a página da categoria
   const handleCategoryClick = (categoryId) => {
     navigate(`/category/${categoryId}`);
   };
 
   const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1280 },
-      items: 4,
-    },
-    tablet: {
-      breakpoint: { max: 1280, min: 690 },
-      items: 3,
-    },
-    mobile: {
-      breakpoint: { max: 690, min: 0 },
-      items: 2,
-    },
+    superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
+    desktop: { breakpoint: { max: 3000, min: 1280 }, items: 4 },
+    tablet: { breakpoint: { max: 1280, min: 690 }, items: 3 },
+    mobile: { breakpoint: { max: 690, min: 0 }, items: 2 },
   };
 
   return (
@@ -55,12 +51,11 @@ export function CategoriesCarousel() {
         itemClass="carousel-item"
       >
         {categories.map((category) => (
-          <ContainerItems 
-            key={category.id} 
+          <ContainerItems
+            key={category.id}
             imageUrl={category.imageUrl}
-            onClick={() => handleCategoryClick(category.id)} 
-          >
-          </ContainerItems>
+            onClick={() => handleCategoryClick(category.id)}
+          />
         ))}
       </Carousel>
     </Container>
