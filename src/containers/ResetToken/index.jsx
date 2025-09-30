@@ -10,7 +10,7 @@ import {
   InputGroup,
   Button,
   InfoMessage,
-} from './styles'; 
+} from './styles';
 
 const ResetToken = () => {
   const [email, setEmail] = useState('');
@@ -52,11 +52,11 @@ const ResetToken = () => {
         {resetLink ? (
           <InfoMessage>
             <p>Link gerado com sucesso!</p>
-            <Button
-              onClick={() =>
-                navigate(resetLink.replace(`${baseUrl}`, ''))
-              }
-            >
+            <a href={resetLink} target="_blank" rel="noopener noreferrer">
+              Clique aqui se não for redirecionado automaticamente
+            </a>
+
+            <Button onClick={() => (window.location.href = resetLink)}>
               Redefinir Senha
             </Button>
           </InfoMessage>
