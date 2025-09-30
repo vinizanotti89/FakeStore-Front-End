@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ADICIONADO
+import { useNavigate } from 'react-router-dom';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
@@ -8,7 +8,7 @@ import { Container, Title, ContainerItems } from './styles';
 
 export function CategoriesCarousel() {
   const [categories, setCategories] = useState([]);
-  const navigate = useNavigate(); // ADICIONADO
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadCategories() {
@@ -19,7 +19,7 @@ export function CategoriesCarousel() {
     loadCategories();
   }, []);
 
-  // ADICIONADO - Função para navegar para a página da categoria
+ // Função para navegar para a página da categoria
   const handleCategoryClick = (categoryId) => {
     navigate(`/category/${categoryId}`);
   };
@@ -58,7 +58,7 @@ export function CategoriesCarousel() {
           <ContainerItems 
             key={category.id} 
             imageUrl={category.imageUrl}
-            onClick={() => handleCategoryClick(category.id)} // ADICIONADO
+            onClick={() => handleCategoryClick(category.id)} 
           >
           </ContainerItems>
         ))}
