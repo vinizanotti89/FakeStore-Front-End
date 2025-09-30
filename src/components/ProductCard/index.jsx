@@ -99,7 +99,7 @@ export function ProductCard({
       {showFeedback && <CartFeedback>{feedbackMessage}</CartFeedback>}
 
       <ProductImage
-        src={product.url}
+        src={product.imageUrl}
         alt={product.name}
         onError={(e) => {
           e.target.src = '/placeholder-product.png';

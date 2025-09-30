@@ -129,7 +129,7 @@ export function CategoryPage() {
             {products.map((product) => (
               <ProductCardContainer key={product.id}>
                 <ProductImage
-                  src={product.url}
+                  src={product.imageUrl}
                   alt={product.name}
                   onClick={() => handleProductClick(product.id)}
                   onError={(e) => {

@@ -99,7 +99,7 @@ export function ProductDetails() {
           <ImageContainer>
             {product.offer && <OfferBadge>OFERTA</OfferBadge>}
             <ProductImage
-              src={product.url}
+              src={product.imageUrl}
               alt={product.name}
               onError={(e) => {
                 e.target.src = '/placeholder-product.png';

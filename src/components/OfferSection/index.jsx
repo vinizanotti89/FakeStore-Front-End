@@ -69,7 +69,7 @@ export function OffersSection() {
           <ProductCard key={product.id}>
             <OfferBadge>DESTAQUE</OfferBadge>
             <ProductImage
-              src={product.url}
+              src={product.imageUrl}
               alt={product.name}
               onClick={() => handleProductClick(product.id)}
               onError={(e) => {

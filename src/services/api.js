@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
+    baseURL: import.meta.env.VITE_BACKEND_URL || "http://localhost:3001",
 });
 
 // Função específica para buscar produtos em oferta
@@ -27,7 +27,7 @@ export const getCategories = async () => {
 };
 
 export const login = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL,
+  baseURL: import.meta.env.VITE_BACKEND_URL || "http://localhost:3001",
 });
 
 // Interceptor para anexar o token
