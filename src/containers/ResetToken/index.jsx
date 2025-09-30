@@ -54,7 +54,7 @@ const ResetToken = () => {
             <p>Link gerado com sucesso!</p>
             <a href={resetLink} target="_blank" rel="noopener noreferrer">
               Clique aqui se não for redirecionado automaticamente
-            </a>
+            </a> <br />
 
             <Button onClick={() => (window.location.href = resetLink)}>
               Redefinir Senha
