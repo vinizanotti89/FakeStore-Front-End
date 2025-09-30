@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { formatPrice } from '../../utils/formatPrice';
 import { BackgroundContainer } from '../../components/BackgroundContainer/index.jsx';
 import { CategoriesCarousel } from '../../components/CategoryCarousel/index.jsx';
-import { AddToCartButton } from '../../components/AddToCartButton'; 
+import { AddToCartButton } from '../../components/AddToCartButton';
 import {
   Container,
   BackButton,
@@ -38,23 +38,33 @@ export function CategoryPage() {
         setLoading(true);
 
         // Busca produtos da categoria
-        const productsResponse = await fetch(`${baseUrl}/products/category/${categoryId}`);
-
+        const productsResponse = await fetch(
+          `${baseUrl}/products/category/${categoryId}`,
+        );
         if (!productsResponse.ok) {
           throw new Error('Erro ao carregar produtos da categoria');
         }
         const productsData = await productsResponse.json();
 
-        // Busca informações das categorias para pegar o nome
-        const categoriesResponse = await fetch(`${baseUrl}/categories`,);
-        if (categoriesResponse.ok) {
-          const categoriesData = await categoriesResponse.json();
-          const currentCategory = categoriesData.find(
-            (cat) => cat.id === parseInt(categoryId),
-          );
-          setCategoryInfo(currentCategory);
+        // Busca informações das categorias para pegar o nome e montar imageUrl
+        const categoriesResponse = await fetch(`${baseUrl}/categories`);
+        if (!categoriesResponse.ok) {
+          throw new Error('Erro ao carregar categorias');
         }
+        const categoriesData = await categoriesResponse.json();
 
+        // Monto URL completa da imagem para cada categoria
+        const categoriesWithImageUrl = categoriesData.map((category) => ({
+          ...category,
+          imageUrl: `${baseUrl}/uploads/${category.path}`,
+        }));
+
+        // Encontro a categoria atual (já com imageUrl, caso precise usar)
+        const currentCategory = categoriesWithImageUrl.find(
+          (cat) => cat.id === parseInt(categoryId),
+        );
+
+        setCategoryInfo(currentCategory);
         setProducts(productsData);
       } catch (err) {
         setError(err.message);
@@ -108,7 +118,7 @@ export function CategoryPage() {
           <BackIcon>←</BackIcon>
           Voltar para Home
         </BackButton>
-        
+
         <CategoriesCarousel />
 
         <CategoryHeader>
@@ -141,7 +151,7 @@ export function CategoryPage() {
                     {product.name}
                   </ProductName>
                   <ProductPrice>{formatPrice(product.price)}</ProductPrice>
-                  
+
                   {/*BOTÃO DE ADICIONAR AO CARRINHO */}
                   <AddToCartButton product={product} />
                 </ProductInfo>
