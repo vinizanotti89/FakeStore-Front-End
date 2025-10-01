@@ -50,14 +50,16 @@ export default function Checkout() {
     e.preventDefault();
     setProcessing(true);
 
+    const { user } = useAuth();
+
     // Simula processamento de pagamento
     await new Promise((res) => setTimeout(res, 1000));
 
     // Prepare os dados da compra
     const purchaseData = {
-      userId: user._id, // id real do usuário
+      userId: user._id, 
       products: cartItems.map((item) => ({
-        productId: item.id, // aqui você precisa enviar o id do produto
+        productId: item.id,
         quantity: item.quantity,
         price: item.price,
       })),
