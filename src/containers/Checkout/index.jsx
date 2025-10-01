@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../../contexts/CartContext';
 import { BackgroundContainer } from '../../components/BackgroundContainer/index.jsx';
 import { Container, CardField, Label, Input, Button, Total } from './styles';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Checkout() {
   const { items, totalAmount, clearCart } = useCart();
+  const { user } = useAuth(); // ✅ Hook deve ser chamado aqui no topo
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -50,23 +52,19 @@ export default function Checkout() {
     e.preventDefault();
     setProcessing(true);
 
-    const { user } = useAuth();
-
     // Simula processamento de pagamento
     await new Promise((res) => setTimeout(res, 1000));
 
     // Prepare os dados da compra
     const purchaseData = {
-      userId: user._id, 
-      products: cartItems.map((item) => ({
+      userId: user?._id || null, // ✅ garante que não quebre se não tiver user
+      products: items.map((item) => ({
         productId: item.id,
         quantity: item.quantity,
         price: item.price,
       })),
-      totalAmount: totalPrice,
+      totalAmount,
     };
-
-    await api.post('/save-purchase', purchaseData);
 
     // Enviar dados para o backend para salvar a compra
     try {
@@ -80,7 +78,6 @@ export default function Checkout() {
       setProcessing(false);
       setSuccess(true);
 
-      // Redireciona depois de 2 segundos
       setTimeout(() => {
         navigate('/');
       }, 2000);
