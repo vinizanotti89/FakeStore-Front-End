@@ -9,6 +9,7 @@ import { ProductDetails } from '../pages/ProductDetails';
 import { CategoryPage } from '../pages/CategoryPage';
 import { CartPage } from '../pages/CartPage';
 import Checkout from '../containers/Checkout/index';
+import Purchases from '../pages/Purchases/index';
 
 import { Home } from '../pages/Home/index';
 
@@ -54,10 +55,10 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/minhas-compras',
+    path: '/Purchases',
     element: (
       <Layout>
-        <MinhasCompras />
+        <Purchases />
       </Layout>
     ),
   },
