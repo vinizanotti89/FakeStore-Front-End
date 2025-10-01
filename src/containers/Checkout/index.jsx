@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export default function Checkout() {
   const { items, totalAmount, clearCart } = useCart();
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -57,9 +57,9 @@ export default function Checkout() {
 
     // Prepare os dados da compra
     const purchaseData = {
-      userId: user?._id || null, // ✅ garante que não quebre se não tiver user
+      userId: user?._id, 
       products: items.map((item) => ({
-        productId: item.id,
+        productId: item._id || item.id, 
         quantity: item.quantity,
         price: item.price,
       })),
