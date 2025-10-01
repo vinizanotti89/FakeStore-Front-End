@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export default function Checkout() {
   const { items, totalAmount, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -57,9 +57,9 @@ export default function Checkout() {
 
     // Prepare os dados da compra
     const purchaseData = {
-      userId: user?._id, 
+      userId: user?._id,
       products: items.map((item) => ({
-        productId: item._id || item.id, 
+        productId: item._id || item.id,
         quantity: item.quantity,
         price: item.price,
       })),
@@ -70,7 +70,11 @@ export default function Checkout() {
     try {
       const baseUrl =
         import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
-      await axios.post(`${baseUrl}/save-purchase`, purchaseData);
+      await axios.post(`${baseUrl}/save-purchase`, purchaseData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     } catch (error) {
       console.error('Erro ao salvar a compra:', error);
     } finally {
