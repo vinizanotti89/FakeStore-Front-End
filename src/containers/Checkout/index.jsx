@@ -55,14 +55,16 @@ export default function Checkout() {
 
     // Prepare os dados da compra
     const purchaseData = {
-      userId: 'id-do-usuario', // Pega o ID do usuário autenticado
-      products: items.map((item) => ({
-        productId: item.productId, 
+      userId: user._id, // id real do usuário
+      products: cartItems.map((item) => ({
+        productId: item.id, // aqui você precisa enviar o id do produto
         quantity: item.quantity,
         price: item.price,
       })),
-      totalAmount,
+      totalAmount: totalPrice,
     };
+
+    await api.post('/save-purchase', purchaseData);
 
     // Enviar dados para o backend para salvar a compra
     try {
