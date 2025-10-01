@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export default function Checkout() {
   const { items, totalAmount, clearCart } = useCart();
-  const { user } = useAuth(); // ✅ Hook deve ser chamado aqui no topo
+  const { user } = useAuth(); 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
