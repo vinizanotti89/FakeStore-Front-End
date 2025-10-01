@@ -56,6 +56,7 @@ export function Header() {
               <UserGreeting>
                 Olá, {user?.name || user?.email || 'Usuário'}!
               </UserGreeting>
+              <Link to="/minhas-compras">Minhas Compras</Link>
               <LogoutButton onClick={handleLogout}>
                 Sair
               </LogoutButton>

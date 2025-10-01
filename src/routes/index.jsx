@@ -53,6 +53,14 @@ export const router = createBrowserRouter([
       </Layout>
     ),
   },
+  {
+    path: '/minhas-compras',
+    element: (
+      <Layout>
+        <MinhasCompras />
+      </Layout>
+    ),
+  },
 
   // Páginas de autenticação SEM o header
   {
