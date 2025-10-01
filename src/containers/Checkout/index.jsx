@@ -24,13 +24,13 @@ export default function Checkout() {
   useEffect(() => {
     const createPaymentIntent = async () => {
       if (items.length === 0) return setLoading(false);
-      const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const baseUrl =
+        import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 
       try {
-        const { data } = await axios.post(
-         `${baseUrl}/create-payment-intent`,
-          { products: items },
-        );
+        const { data } = await axios.post(`${baseUrl}/create-payment-intent`, {
+          products: items,
+        });
         setClientSecret(data.clientSecret);
       } catch {
         // ignora erros
@@ -50,17 +50,37 @@ export default function Checkout() {
     e.preventDefault();
     setProcessing(true);
 
-    // Simula processamento
+    // Simula processamento de pagamento
     await new Promise((res) => setTimeout(res, 1000));
 
-    clearCart();
-    setProcessing(false);
-    setSuccess(true);
+    // Prepare os dados da compra
+    const purchaseData = {
+      userId: 'id-do-usuario', // Pega o ID do usuário autenticado
+      products: items.map((item) => ({
+        productId: item.productId, 
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      totalAmount,
+    };
 
-    // redireciona depois de 2s
-    setTimeout(() => {
-      navigate('/');
-    }, 2000);
+    // Enviar dados para o backend para salvar a compra
+    try {
+      const baseUrl =
+        import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      await axios.post(`${baseUrl}/save-purchase`, purchaseData);
+    } catch (error) {
+      console.error('Erro ao salvar a compra:', error);
+    } finally {
+      clearCart();
+      setProcessing(false);
+      setSuccess(true);
+
+      // Redireciona depois de 2 segundos
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    }
   };
 
   if (loading) {
@@ -107,7 +127,10 @@ export default function Checkout() {
 
         <form onSubmit={handleSubmit}>
           <CardField>
-            <Label>Número do cartão (Os dados presentes aqui são fictícios e funcionam para simular uma compra)</Label>
+            <Label>
+              Número do cartão (Os dados presentes aqui são fictícios e
+              funcionam para simular uma compra)
+            </Label>
             <Input
               name="number"
               value={cardData.number}
