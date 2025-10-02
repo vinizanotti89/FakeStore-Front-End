@@ -72,7 +72,7 @@ export default function Checkout() {
         import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
       await axios.post(`${baseUrl}/save-purchase`, purchaseData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, 
         },
       });
     } catch (error) {
