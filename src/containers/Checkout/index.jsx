@@ -8,21 +8,19 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export default function Checkout() {
   const { items, totalAmount, clearCart } = useCart();
-  const { user, token } = useAuth();
+  const { user, token } = useAuth(); 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [clientSecret, setClientSecret] = useState(null);
-
   const [cardData, setCardData] = useState({
     number: '4242 4242 4242 4242',
     exp: '12/34',
     cvc: '123',
   });
 
-  // Criar PaymentIntent no backend
+  // Cria PaymentIntent
   useEffect(() => {
     const createPaymentIntent = async () => {
       if (items.length === 0) return setLoading(false);
@@ -33,9 +31,8 @@ export default function Checkout() {
         const { data } = await axios.post(`${baseUrl}/create-payment-intent`, {
           products: items,
         });
-        setClientSecret(data.clientSecret);
-      } catch {
-        // ignora erros
+      } catch (err) {
+        console.error('Erro ao criar PaymentIntent:', err);
       } finally {
         setLoading(false);
       }
@@ -50,14 +47,12 @@ export default function Checkout() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!token) return alert('Usuário não autenticado');
+
     setProcessing(true);
 
-    // Simula processamento de pagamento
-    await new Promise((res) => setTimeout(res, 1000));
-
-    // Prepare os dados da compra
     const purchaseData = {
-      userId: user?._id,
+      userId: user?.id,
       products: items.map((item) => ({
         productId: item._id || item.id,
         quantity: item.quantity,
@@ -66,7 +61,6 @@ export default function Checkout() {
       totalAmount,
     };
 
-    // Enviar dados para o backend para salvar a compra
     try {
       const baseUrl =
         import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
@@ -75,36 +69,31 @@ export default function Checkout() {
           Authorization: `Bearer ${token}`, 
         },
       });
-    } catch (error) {
-      console.error('Erro ao salvar a compra:', error);
-    } finally {
-      clearCart();
-      setProcessing(false);
       setSuccess(true);
+      clearCart();
 
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
+      setTimeout(() => navigate('/'), 2000);
+    } catch (err) {
+      console.error('Erro ao salvar a compra:', err);
+      alert('Falha ao processar a compra');
+    } finally {
+      setProcessing(false);
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
       <BackgroundContainer>
         <h1>Carregando informações de pagamento...</h1>
       </BackgroundContainer>
     );
-  }
-
-  if (items.length === 0 && !success) {
+  if (items.length === 0 && !success)
     return (
       <BackgroundContainer>
         <h1>Seu carrinho está vazio!</h1>
       </BackgroundContainer>
     );
-  }
-
-  if (success) {
+  if (success)
     return (
       <BackgroundContainer>
         <div
@@ -122,7 +111,6 @@ export default function Checkout() {
         </div>
       </BackgroundContainer>
     );
-  }
 
   return (
     <BackgroundContainer>
@@ -132,10 +120,7 @@ export default function Checkout() {
 
         <form onSubmit={handleSubmit}>
           <CardField>
-            <Label>
-              Número do cartão (Os dados presentes aqui são fictícios e
-              funcionam para simular uma compra)
-            </Label>
+            <Label>Número do cartão (fictício)</Label>
             <Input
               name="number"
               value={cardData.number}
